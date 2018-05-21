@@ -27,6 +27,7 @@
    [balcony.email :as email]
    [balcony.http :as http]
    [balcony.json :as json]
+   [clojure.string :as str]
    [clojure.tools.cli :refer [parse-opts]])
   (:import [java.time LocalDateTime]
            [java.time.format DateTimeFormatter]))
@@ -72,7 +73,9 @@
           TOMORROW
           WEATHER_API_KEY))
 
-(def MAIL_TO (or MAIL_TO "michielborkent@gmail.com"))
+(def MAIL_TO (str/split
+              (or MAIL_TO "michielborkent@gmail.com")
+              #",\s"))
 (def MAIL_SUBJECT (or MAIL_SUBJECT "You need to water the balcony today."))
 (def MAIL_BODY (or MAIL_BODY "You need to water the balcony today. The average temperature was above 20 degrees Celcius between 9 AM and 7 PM."))
 
