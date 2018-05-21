@@ -2,7 +2,7 @@
 # balcony
 
 A self-contained Clojure script that lets me know if I should water my
-balcony every night.
+balcony at night.
 
 ## Credits
 
