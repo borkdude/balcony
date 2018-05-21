@@ -7,6 +7,18 @@
 (> "/dev/null");tools_cli="org.clojure/tools.cli {:mvn/version \"0.3.7\"}"
 "exec" "clj" "-Sdeps" "{:deps {$cheshire $cider $clj_http $jdbc $h2 $postal $tools_cli}}" "$0" "$@"
 
+(ns balcony.core
+  (:require
+   [balcony.dev :as dev]
+   [balcony.email :as email]
+   [balcony.http :as http]
+   [balcony.json :as json]
+   [clojure.string :as str]
+   [clojure.tools.cli :refer [parse-opts]])
+  (:import [java.time LocalDateTime]
+           [java.time.format DateTimeFormatter]
+           [java.text DecimalFormat]))
+
 ;; proxy namespaces, libraries are loaded lazily for faster startup up time
 (ns balcony.dev)
 (declare start-server cider-nrepl-handler)
@@ -21,16 +33,7 @@
 (ns balcony.email)
 (declare send-message)
 
-(ns balcony.core
-  (:require
-   [balcony.dev :as dev]
-   [balcony.email :as email]
-   [balcony.http :as http]
-   [balcony.json :as json]
-   [clojure.string :as str]
-   [clojure.tools.cli :refer [parse-opts]])
-  (:import [java.time LocalDateTime]
-           [java.time.format DateTimeFormatter]))
+(in-ns 'balcony.core)
 
 (defmacro defenv!
   "Defines vars with same name as environment variables"
@@ -75,9 +78,9 @@
 
 (def MAIL_TO (str/split
               (or MAIL_TO "michielborkent@gmail.com")
-              #",\s"))
+              #",\s*"))
 (def MAIL_SUBJECT (or MAIL_SUBJECT "You need to water the balcony today."))
-(def MAIL_BODY (or MAIL_BODY "You need to water the balcony today. The average temperature was above 20 degrees Celcius between 9 AM and 7 PM."))
+(def MAIL_BODY (or MAIL_BODY "Please water the balcony tonight. The average temperature between 9AM and 7PM was {{avg}} degrees Celcius."))
 
 (defn send-mail!
   []
@@ -104,9 +107,7 @@
                           {:from "michielborkent@gmail.com"
                            :to MAIL_TO
                            :subject MAIL_SUBJECT
-                           :body (str MAIL_BODY
-                                      (format
-                                       " The average was %s degrees Celcius." avg))}))))
+                           :body (str/replace MAIL_BODY #"\{\{avg\}\}" (str avg))}))))
 
 (defn dev! []
   (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
