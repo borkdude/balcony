@@ -1,8 +1,8 @@
 
 # balcony
 
-A self-contained Clojure script to let me know if I should water the
-flowers on the balcony tonight.
+A self-contained Clojure script that lets me know if I should water my
+balcony every night.
 
 ## Credits
 
