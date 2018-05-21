@@ -50,7 +50,6 @@
 ;; constants
 
 (defenv!
-  DEV
   WEATHER_API_KEY
   MAIL_USER
   MAIL_PASS
