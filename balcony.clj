@@ -101,7 +101,9 @@
                           {:from "michielborkent@gmail.com"
                            :to MAIL_TO
                            :subject MAIL_SUBJECT
-                           :body MAIL_BODY}))))
+                           :body (str MAIL_BODY
+                                      (format
+                                       " The average was %s degrees Celcius." avg))}))))
 
 (defn dev! []
   (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
