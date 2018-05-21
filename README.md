@@ -11,11 +11,11 @@ The idea to use `exec` came from [Planck](https://github.com/planck-repl/planck)
 ## Installation
 
 SCP the script to a server or run from your own machine.
-Set the variables `MAIL_USER`, `MAIL_PASS` and `WEATHER_API_KEY` in e.g. `.bashrc`.
+Set the variables `MAIL_USER`, `MAIL_PASS` and `WEATHER_API_KEY` in e.g. `.profile`.
 Then hook the script up in cron:
 
     crontab -e
-    30 19 * * * /usr/bin/env bash ~/balcony.clj -m
+    30 19 * * * /usr/bin/env bash -c '. $HOME/.profile && $HOME/balcony.clj -m'
 
 ## Options
 
