@@ -12,8 +12,7 @@
    [clojure.string :as str]
    [clojure.tools.cli :refer [parse-opts]])
   (:import [java.time LocalDateTime]
-           [java.time.format DateTimeFormatter]
-           [java.text DecimalFormat]))
+           [java.time.format DateTimeFormatter]))
 
 ;; proxy namespaces, libraries are loaded lazily for faster startup up time
 (ns balcony.dev)
@@ -108,7 +107,8 @@
                           {:from "michielborkent@gmail.com"
                            :to MAIL_TO
                            :subject MAIL_SUBJECT
-                           :body (str/replace MAIL_BODY #"\{\{avg\}\}" (str avg))}))))
+                           :body (str/replace MAIL_BODY #"\{\{avg\}\}"
+                                              (format "%.1f" avg))}))))
 
 (defn dev! []
   (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
