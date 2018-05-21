@@ -9,10 +9,6 @@
 
 (ns balcony.core
   (:require
-   [balcony.dev :as dev]
-   [balcony.email :as email]
-   [balcony.http :as http]
-   [balcony.json :as json]
    [clojure.string :as str]
    [clojure.tools.cli :refer [parse-opts]])
   (:import [java.time LocalDateTime]
@@ -34,6 +30,11 @@
 (declare send-message)
 
 (in-ns 'balcony.core)
+
+(require '[balcony.dev :as dev])
+(require '[balcony.email :as email])
+(require '[balcony.http :as http])
+(require '[balcony.json :as json])
 
 (defmacro defenv!
   "Defines vars with same name as environment variables"
