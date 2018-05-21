@@ -22,3 +22,7 @@ Then hook the script up in cron:
 
 - `--develop` or `-d`: development mode. Will start CIDER-nREPL.
 - `--mail` or `-m`: send an email if today's temperature exceeded threshold.
+
+## What's with the weird first few lines?
+
+The first few lines are relevant to bash, but not to the Clojure program. Still they have to be valid Clojure, because (using exec) clj executes the entire file.
