@@ -15,6 +15,7 @@
            [java.time.format DateTimeFormatter]))
 
 ;; proxy namespaces, libraries are loaded lazily for faster startup up time
+
 (ns balcony.dev)
 (declare start-server cider-nrepl-handler)
 
@@ -62,11 +63,11 @@
   MAIL_BODY)
 
 (def dtf (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
-(def now (LocalDateTime/now))
+(def now ^LocalDateTime (LocalDateTime/now))
 (def TODAY
-  (.format ^LocalDateTime now dtf))
+  (.format now dtf))
 (def TOMORROW
-  (-> ^LocalDateTime now
+  (-> now
       (.plusDays 1)
       (.format dtf)))
 
