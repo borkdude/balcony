@@ -5,7 +5,7 @@
 (> "/dev/null");nrepl="org.clojure/tools.nrepl {:mvn/version \"0.2.12\"}"
 (> "/dev/null");postal="com.draines/postal {:mvn/version \"2.0.2\"}"
 (> "/dev/null");tools_cli="org.clojure/tools.cli {:mvn/version \"0.3.7\"}"
-"exec" "clj" "-Sdeps" "{:deps {$cheshire $cider $clj_http $jdbc $h2 $postal $tools_cli}}" "$0" "$@"
+"exec" "clj" "-Sdeps" "{:deps {$cheshire $cider $clj_http $postal $tools_cli}}" "$0" "$@"
 
 (ns balcony.core
   (:require
@@ -35,6 +35,8 @@
 (require '[balcony.email :as email])
 (require '[balcony.http :as http])
 (require '[balcony.json :as json])
+
+;; some helper macros
 
 (defmacro defconst
   [const-name const-val]
@@ -69,11 +71,14 @@
   MAIL_SUBJECT
   MAIL_BODY)
 
-(defconst dtf (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
-(defconst now (LocalDateTime/now))
+;; today and tomorrow's string representation
+
+(def dtf (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
+(def ^LocalDateTime now (LocalDateTime/now))
 
 (defconst TODAY
   (.format now dtf))
+
 (defconst TOMORROW
   (-> now
       (.plusDays 1)
@@ -98,9 +103,9 @@
 
 (defn send-mail!
   []
-  (resolve* 'postal.core 'balcony.email 'send-message)
-  (resolve* 'clj-http.client 'balcony.http 'get)
   (resolve* 'cheshire.core 'balcony.json 'parse-string)
+  (resolve* 'clj-http.client 'balcony.http 'get)
+  (resolve* 'postal.core 'balcony.email 'send-message)
   (let [response
         (-> (http/get WEATHER_API)
             :body
@@ -125,8 +130,8 @@
                                               (format "%.1f" avg))}))))
 
 (defn dev! []
-  (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
   (resolve* 'cider.nrepl 'balcony.dev 'cider-nrepl-handler)
+  (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
   (dev/start-server :port 7888 :handler dev/cider-nrepl-handler)
   (println "Started nREPL on port 7888"))
 
@@ -144,5 +149,5 @@
 ;;;; Scratch
 
 (comment
-
+  (send-mail!)
 )
