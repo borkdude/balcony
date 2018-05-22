@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
+
 ":";cheshire='cheshire {:mvn/version "5.8.0"}'
 ":";cider='cider/cider-nrepl {:mvn/version "0.17.0-SNAPSHOT"}'
 ":";clj_http='clj-http {:mvn/version "3.9.0"}'
 ":";nrepl='org.clojure/tools.nrepl {:mvn/version "0.2.12"}'
 ":";postal='com.draines/postal {:mvn/version "2.0.2"}'
 ":";tools_cli='org.clojure/tools.cli {:mvn/version "0.3.7"}'
-"exec" "clj" "-Sdeps" "{:deps {$cheshire $cider $clj_http $postal $tools_cli}}" "$0" "$@"
+
+":";locals_clearing='-J-Dclojure.compiler.disable-locals-clearing=true'
+":";elide_meta='-J-Dclojure.compiler.elide-meta="[:doc :file :line :added]"'
+":";direct_linking='-J-Dclojure.compiler.direct-linking=true'
+
+"exec" "clj" "$direct_linking" "$locals_clearing" "$elide_meta" "-Sdeps" "{:deps {$cheshire $cider $clj_http $postal $tools_cli}}" "$0" "$@"
 
 (ns balcony.core
   (:require
@@ -150,4 +156,4 @@
 
 (comment
   (send-mail!)
-)
+  )
