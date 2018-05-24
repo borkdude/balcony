@@ -28,4 +28,5 @@ cron:
 
 The first few lines are relevant to bash, but not to the Clojure program. Still
 they have to be valid Clojure, because (using exec) clj executes the entire
-file.
+file. Also, it's convenient to be able to evaluate your entire file inside your
+editor. By making the Bash expressions readable by Clojure, you get no errors.
