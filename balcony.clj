@@ -16,27 +16,31 @@
   (:import [java.time LocalDateTime]
            [java.time.format DateTimeFormatter]))
 
-;; proxy namespaces, libraries are loaded lazily for faster startup up time
+(defmacro lazy-require
+  [ns alias vars]
+  (let [target-ns (symbol (str "lazy." ns))]
+    `(let [al# (quote ~alias)
+           ns# (quote ~ns)
+           tns# (quote ~target-ns)
+           vs# (quote ~vars)]
+       (ns-unalias *ns* al#)
+       (create-ns tns#)
+       (alias al# tns#)
+       (doseq [v# vs#]
+         (intern tns# v#))
+       (intern tns# (symbol "require!")
+               #(do
+                  (require ns#)
+                  (doseq [v# vs#]
+                    (intern tns# v# (ns-resolve ns# v#))))))))
 
-(ns balcony.dev)
-(declare start-server cider-nrepl-handler)
+;; libraries are loaded lazily for faster startup up time
 
-(ns balcony.http
-  (:refer-clojure :exclude [get update]))
-(declare get)
-
-(ns balcony.json)
-(declare parse-string)
-
-(ns balcony.email)
-(declare send-message)
-
-(in-ns 'balcony.core)
-
-(require '[balcony.dev :as dev])
-(require '[balcony.email :as email])
-(require '[balcony.http :as http])
-(require '[balcony.json :as json])
+(lazy-require cider.nrepl cider [cider-nrepl-handler])
+(lazy-require clojure.tools.nrepl.server nrepl [start-server])
+(lazy-require clj-http.client http [get])
+(lazy-require cheshire.core json [parse-string])
+(lazy-require postal.core email [send-message])
 
 ;; some helper macros
 
@@ -54,14 +58,6 @@
         (for [variable variables]
           `(defconst ~variable
              (System/getenv (str (quote ~variable)))))))
-
-(defmacro resolve*
-  "Requires namespace and interns vars to target-ns."
-  [ns target-ns & vars]
-  (cons 'do
-        (cons (list 'require ns)
-              (for [v vars]
-                `(intern ~target-ns ~v (ns-resolve ~ns ~v))))))
 
 ;; constants
 
@@ -105,9 +101,9 @@
 
 (defn send-mail!
   []
-  (resolve* 'cheshire.core 'balcony.json 'parse-string)
-  (resolve* 'clj-http.client 'balcony.http 'get)
-  (resolve* 'postal.core 'balcony.email 'send-message)
+  (http/require!)
+  (json/require!)
+  (email/require!)
   (let [response
         (-> (http/get WEATHER_API)
             :body
@@ -132,9 +128,9 @@
                                               (format "%.1f" avg))}))))
 
 (defn dev! []
-  (resolve* 'cider.nrepl 'balcony.dev 'cider-nrepl-handler)
-  (resolve* 'clojure.tools.nrepl.server 'balcony.dev 'start-server)
-  (dev/start-server :port 7888 :handler dev/cider-nrepl-handler)
+  (cider/require!)
+  (nrepl/require!)
+  (nrepl/start-server :port 7888 :handler cider/cider-nrepl-handler)
   (println "Started nREPL on port 7888"))
 
 (def cli-options
