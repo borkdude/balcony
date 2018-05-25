@@ -18,7 +18,7 @@
 
 (defmacro jit-require
   [ns alias vars]
-  (let [target-ns (symbol (str "lazy." ns))]
+  (let [target-ns (symbol (str "jit." ns))]
     `(let [al# (quote ~alias)
            ns# (quote ~ns)
            tns# (quote ~target-ns)
