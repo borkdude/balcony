@@ -16,7 +16,7 @@
   (:import [java.time LocalDateTime]
            [java.time.format DateTimeFormatter]))
 
-(defmacro lazy-require
+(defmacro jit-require
   [ns alias vars]
   (let [target-ns (symbol (str "lazy." ns))]
     `(let [al# (quote ~alias)
@@ -34,13 +34,13 @@
                   (doseq [v# vs#]
                     (intern tns# v# (ns-resolve ns# v#))))))))
 
-;; libraries are loaded lazily for faster startup up time
+;; libraries are loaded just in time for faster startup up time
 
-(lazy-require cider.nrepl cider [cider-nrepl-handler])
-(lazy-require clojure.tools.nrepl.server nrepl [start-server])
-(lazy-require clj-http.client http [get])
-(lazy-require cheshire.core json [parse-string])
-(lazy-require postal.core email [send-message])
+(jit-require cider.nrepl cider [cider-nrepl-handler])
+(jit-require clojure.tools.nrepl.server nrepl [start-server])
+(jit-require clj-http.client http [get])
+(jit-require cheshire.core json [parse-string])
+(jit-require postal.core email [send-message])
 
 ;; some helper macros
 
