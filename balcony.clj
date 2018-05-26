@@ -3,7 +3,6 @@
 ":";cheshire='cheshire {:mvn/version "5.8.0"}'
 ":";cider='cider/cider-nrepl {:mvn/version "0.17.0-SNAPSHOT"}'
 ":";clj_http='clj-http {:mvn/version "3.9.0"}'
-":";nrepl='org.clojure/tools.nrepl {:mvn/version "0.2.12"}'
 ":";postal='com.draines/postal {:mvn/version "2.0.2"}'
 ":";tools_cli='org.clojure/tools.cli {:mvn/version "0.3.7"}'
 
@@ -147,11 +146,12 @@
    ["-m" "--mail" "Mail if average temperature of today is above threshold"]])
 
 (defonce init
-  (let [opts (:options
-              (parse-opts *command-line-args* cli-options))]
+  (let [{:keys [:options :summary]}
+        (parse-opts *command-line-args* cli-options)]
     (cond
-      (:mail opts) (send-mail!)
-      (:develop opts) (dev!))))
+      (:mail options) (send-mail!)
+      (:develop options) (dev!)
+      :else (println summary))))
 
 ;;;; Scratch
 
