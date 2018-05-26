@@ -13,7 +13,7 @@
 
 (defmacro require
   "Delays requiring a namespace until you actually need
-  it. Syntax: (require example.core :as example :refer [foo bar]). If
+  it. Syntax: (require example.core :as example :only [foo bar]). If
   the time has come, call (example/require)."
   [ns as alias only vars]
   (let [target-ns (symbol (str "jit." ns))]
