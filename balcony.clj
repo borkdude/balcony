@@ -13,6 +13,9 @@
   (:refer-clojure :exclude [require]))
 
 (defmacro require
+  "Delays requiring a namespace until you actually need
+  it. Syntax: (require example.core :as example :refer [foo bar]). If
+  the time has come, call (example/require)."
   [ns as alias refer vars]
   (let [target-ns (symbol (str "jit." ns))]
     `(let [al# (quote ~alias)
