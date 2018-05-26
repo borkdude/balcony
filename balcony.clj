@@ -9,15 +9,11 @@
 
 "exec" "clj" "-Sdeps" "{:deps {$cheshire $cider $clj_http $postal $tools_cli}}" "$0" "$@"
 
-(ns balcony.core
-  (:require
-   [clojure.string :as str]
-   [clojure.tools.cli :refer [parse-opts]])
-  (:import [java.time LocalDateTime]
-           [java.time.format DateTimeFormatter]))
+(ns jit-require.core
+  (:refer-clojure :exclude [require]))
 
-(defmacro jit-require
-  [ns alias vars]
+(defmacro require
+  [ns as alias refer vars]
   (let [target-ns (symbol (str "jit." ns))]
     `(let [al# (quote ~alias)
            ns# (quote ~ns)
@@ -30,17 +26,27 @@
          (intern tns# v#))
        (intern tns# (symbol "require!")
                #(do
-                  (require ns#)
+                  (clojure.core/require ns#)
                   (doseq [v# vs#]
                     (intern tns# v# (ns-resolve ns# v#))))))))
 
+(ns balcony.core
+  (:require
+   [clojure.string :as str]
+   [clojure.tools.cli :refer [parse-opts]]
+   [jit-require.core :as jit])
+  (:import [java.time LocalDateTime]
+           [java.time.format DateTimeFormatter]))
+
+
+
 ;; libraries are loaded just in time for faster startup up time
 
-(jit-require cider.nrepl cider [cider-nrepl-handler])
-(jit-require clojure.tools.nrepl.server nrepl [start-server])
-(jit-require clj-http.client http [get])
-(jit-require cheshire.core json [parse-string])
-(jit-require postal.core email [send-message])
+(jit/require cider.nrepl                :as cider :refer [cider-nrepl-handler])
+(jit/require clojure.tools.nrepl.server :as nrepl :refer [start-server])
+(jit/require clj-http.client            :as http  :refer [get])
+(jit/require cheshire.core              :as json  :refer [parse-string])
+(jit/require postal.core                :as email :refer [send-message])
 
 ;; some helper macros
 
