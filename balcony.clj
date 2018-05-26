@@ -15,7 +15,7 @@
   "Delays requiring a namespace until you actually need
   it. Syntax: (require example.core :as example :refer [foo bar]). If
   the time has come, call (example/require)."
-  [ns as alias refer vars]
+  [ns as alias only vars]
   (let [target-ns (symbol (str "jit." ns))]
     `(let [al# (quote ~alias)
            ns# (quote ~ns)
@@ -44,11 +44,11 @@
 
 ;; libraries are loaded just in time for faster startup up time
 
-(jit/require cider.nrepl                :as cider :refer [cider-nrepl-handler])
-(jit/require clojure.tools.nrepl.server :as nrepl :refer [start-server])
-(jit/require clj-http.client            :as http  :refer [get])
-(jit/require cheshire.core              :as json  :refer [parse-string])
-(jit/require postal.core                :as email :refer [send-message])
+(jit/require cider.nrepl                :as cider :only [cider-nrepl-handler])
+(jit/require clojure.tools.nrepl.server :as nrepl :only [start-server])
+(jit/require clj-http.client            :as http  :only [get])
+(jit/require cheshire.core              :as json  :only [parse-string])
+(jit/require postal.core                :as email :only [send-message])
 
 ;; some helper macros
 
