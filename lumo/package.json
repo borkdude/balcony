@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "moment": "^2.22.1",
+    "nodemailer": "^4.6.5"
+  }
+}
