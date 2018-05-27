@@ -13,7 +13,7 @@ Make sure [clj](https://clojure.org/guides/getting_started),
 
 ## Run
 
-Make sure the environment variables described in [deploy](#Deploy) are set
+Make sure the environment variables described in [deploy](#deploy) are set
 correctly. Then:
 
     scripts/balcony
