@@ -1,1 +1,6 @@
 /.nrepl-history
+/lumo/.cpcache
+/lumo/.lumo_cache
+lumo/node_modules
+lumo/out
+lumo/bin

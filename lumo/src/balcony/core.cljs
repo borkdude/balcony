@@ -11,9 +11,6 @@
 
 (node/enable-util-print!)
 
-;; inspiration:
-;; https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23#file-gallery-cljs-L11
-
 (defonce http (node/require "http"))
 (defonce https (node/require "https"))
 
@@ -48,9 +45,7 @@
                              :pass MAIL_PASS}})))
 
 (def cli-options
-  [["-d" "--develop" "Starts nREPL"]
-   ["-m" "--mail" "Mail if average temperature of today is above threshold"]])
-
+  [["-m" "--mail" "Mail if average temperature of today is above threshold"]])
 
 (def now (moment))
 (def date-format "YYYY-MM-DD")
@@ -95,7 +90,8 @@
 
 (defonce main
   #(let [{:keys [:options :summary]}
-         (parse-opts *command-line-args* cli-options)]
+         (parse-opts (or *command-line-args*
+                         (drop 2 js/process.argv)) cli-options)]
      (cond
        (:mail options) (send-mail)
        ;; (:develop options) (dev!)

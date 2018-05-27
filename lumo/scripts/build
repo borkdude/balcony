@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+rm -rf out
+lumo -c src -c $(clojure -Spath) build.cljs
+
+COMPILED_PATH="out/main.js"
+
+BUNDLED_PATH="bin/balcony.js"
+
+mkdir -p bin
+echo '#!/usr/bin/env node' > $BUNDLED_PATH
+chmod +x $BUNDLED_PATH
+yarn -s browserify -g uglifyify --node --standalone index $COMPILED_PATH >> $BUNDLED_PATH

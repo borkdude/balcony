@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+lumo -K -c src -c $(clojure -Spath) balcony/core.cljs "$@"
