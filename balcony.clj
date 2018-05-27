@@ -52,19 +52,12 @@
 
 ;; some helper macros
 
-(defmacro defconst
-  [const-name const-val]
-  `(def
-     ~(with-meta const-name
-        (assoc (meta const-name) :const true))
-     ~const-val))
-
 (defmacro defenvs
   "Defines vars with same name as environment variables"
   [& variables]
   (cons 'do
-        (for [variable variables]
-          `(defconst ~variable
+        (doseq [variable variables]
+          `(def ~variable
              (System/getenv (str (quote ~variable)))))))
 
 ;; constants
@@ -82,29 +75,29 @@
 (def dtf (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
 (def ^LocalDateTime now (LocalDateTime/now))
 
-(defconst TODAY
+(def TODAY
   (.format now dtf))
 
-(defconst TOMORROW
+(def TOMORROW
   (-> now
       (.plusDays 1)
       (.format dtf)))
 
-(defconst WEATHER_API
+(def WEATHER_API
   (format "https://api.weatherbit.io/v2.0/history/hourly?city=Amersfoort,NL&start_date=%s&end_date=%s&key=%s"
           TODAY
           TOMORROW
           WEATHER_API_KEY))
 
-(defconst MAIL_TO
+(def MAIL_TO
   (str/split
    (or MAIL_TO "michielborkent@gmail.com")
    #",\s*"))
 
-(defconst MAIL_SUBJECT
+(def MAIL_SUBJECT
   (or MAIL_SUBJECT "You need to water the balcony today."))
 
-(defconst MAIL_BODY
+(def MAIL_BODY
   (or MAIL_BODY "Please water the balcony tonight. The average temperature between 9AM and 7PM was {{avg}} degrees Celcius."))
 
 (defn send-mail!
