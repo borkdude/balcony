@@ -54,6 +54,9 @@ sys    0m0.341s
 
 ## Credits
 
+Huge thanks to @anmonteiro and @richiardiandrea from the #lumo channel on
+[Clojurians Slack](http://clojurians.net/).
+
 Inspiration taken from
 
 - https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23#file-gallery-cljs-L11
