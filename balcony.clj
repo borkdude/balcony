@@ -55,10 +55,11 @@
 (defmacro defenvs
   "Defines vars with same name as environment variables"
   [& variables]
-  (cons 'do
-        (doseq [variable variables]
-          `(def ~variable
-             (System/getenv (str (quote ~variable)))))))
+  (let [defs (for [variable variables]
+               `(def ~variable
+                  (System/getenv (str (quote ~variable)))))]
+    `(do
+       ~@defs)))
 
 ;; constants
 
