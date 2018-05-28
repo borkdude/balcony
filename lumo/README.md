@@ -61,3 +61,13 @@ Inspiration taken from
 
 - https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23#file-gallery-cljs-L11
 - https://github.com/paullucas/les-clj/tree/master/scripts
+
+## TODO
+
+- Dockerize?
+
+See https://github.com/nodejs/docker-node#how-to-use-this-image
+
+        docker run -v$(PWD)/:/home/node/app -w/home/node/app node yarn install
+        docker run -v$(PWD)/:/home/node/app -w/home/node/app node yarn add lumo-cljs --dev
+        docker run -v$(PWD)/:/home/node/app -w/home/node/app -it node yarn lumo
