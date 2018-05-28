@@ -71,3 +71,7 @@ See https://github.com/nodejs/docker-node#how-to-use-this-image
         docker run -v$(PWD)/:/home/node/app -w/home/node/app node yarn install
         docker run -v$(PWD)/:/home/node/app -w/home/node/app node yarn add lumo-cljs --dev
         docker run -v$(PWD)/:/home/node/app -w/home/node/app -it node yarn lumo
+
+Different location for node_modules:
+
+        docker run -v$(PWD)/:/home/node/app -v$(PWD)/../node_modules/:/tmp/node_modules/ -w/home/node/app -it node yarn install --modules-folder /tmp/node_modules

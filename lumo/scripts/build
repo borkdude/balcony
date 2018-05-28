@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 rm -rf out
-lumo -c src -c $(clojure -Spath) $(dirname "$0")/build.cljs
+lumo -c src -c $(clojure -Srepro -Spath) $(dirname "$0")/build.cljs
 
 COMPILED_PATH="out/main.js"
 
