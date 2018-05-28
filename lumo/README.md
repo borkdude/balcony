@@ -75,3 +75,5 @@ See https://github.com/nodejs/docker-node#how-to-use-this-image
 Different location for node_modules:
 
         docker run -v$(PWD)/:/home/node/app -v$(PWD)/../node_modules/:/tmp/node_modules/ -w/home/node/app -it node yarn install --modules-folder /tmp/node_modules
+
+- Look at https://github.com/Cumulo/cumulo-workflow for inspiration
