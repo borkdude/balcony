@@ -52,17 +52,6 @@ user    0m12.479s
 sys    0m0.341s
 ```
 
-There is also a single `bash`/`.cljs` `scripts/balcony` file that doesn't need
-building and can be run/deployed as is. That one takes slightly longer, but
-still faster than `clj`:
-
-``` shell
-$ time ./balcony.cljs -m
-./balcony.cljs -m  1.70s user 0.16s system 67% cpu 2.753 total
-```
-
-PS: this only runs on my Mac, could not get it to work on my VPS yet.
-
 ## Credits
 
 Huge thanks to @anmonteiro and @richiardiandrea from the #lumo channel on
