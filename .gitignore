@@ -4,3 +4,4 @@
 lumo/node_modules
 lumo/out
 lumo/bin
+/lumo/scripts/.lumo_cache

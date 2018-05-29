@@ -3,7 +3,7 @@
 ":";tools_cli='org.clojure/tools.cli {:mvn/version "0.3.7"}'
 ":";momentjs='org.webjars.npm/moment {:mvn/version "2.22.1"}'
 ":";nodemailer='org.webjars.npm/nodemailer {:mvn/version "4.6.5"}'
-":";src=$(clojure -Srepro -Spath -Sdeps "{:deps {$tools_cli $moment $nodemailer}}")
+":";src=$(clojure -Spath -Sdeps "{:deps {$tools_cli $momentjs $nodemailer}}")
 
 "exec" "lumo" "-K" "-c" "$src" "$0" "$@"
 
