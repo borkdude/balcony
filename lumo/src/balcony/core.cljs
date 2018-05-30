@@ -5,30 +5,12 @@
    [clojure.tools.cli :refer [parse-opts]]
    [goog.string :as gstring]
    [goog.string.format] ;; don't remove
+   [got]
    [moment]
    [nodemailer :as nm])
   (:require-macros [balcony.env :refer [defenvs]]))
 
 (node/enable-util-print!)
-
-(defonce http (node/require "http"))
-(defonce https (node/require "https"))
-
-(defn get-url [url cb]
-  (.get (if (str/starts-with? url "https") https http) url cb))
-
-(defn GET [url]
-  (js/Promise.
-   (fn [resolve reject]
-     (get-url url
-              (fn [res]
-                (let [body (atom "")]
-                  (-> res
-                      (.on "data" #(swap! body str (.toString %)))
-                      (.on "end" #(-> @body
-                                      js/JSON.parse
-                                      (js->clj :keywordize-keys true)
-                                      resolve)))))))))
 
 (defenvs
   WEATHER_API_KEY
@@ -68,25 +50,26 @@
   (or MAIL_BODY "Please water the balcony tonight. The average temperature between 9AM and 7PM was {{avg}} degrees Celcius."))
 
 (defn send-mail []
-  (.then (GET WEATHER_API)
-         (fn [response]
-           (let [
-                 temps (->>
-                        response
-                        :data
-                        (map :temp)
-                        (drop 9)
-                        (take 10))
-                 total (apply + temps)
-                 avg (/ total (count temps))]
-             (when (> avg 20)
-               (.sendMail transporter
-                          (clj->js
-                           {:from "michielborkent@gmail.com"
-                            :to MAIL_TO
-                            :subject MAIL_SUBJECT
-                            :text (str/replace MAIL_BODY #"\{\{avg\}\}"
-                                               (gstring/format "%.1f" avg))})))))))
+  (.then (got WEATHER_API #js {:json true})
+         #(let
+              [body (js->clj (.-body %)
+                             :keywordize-keys true)
+               temps (->>
+                     body
+                     :data
+                     (map :temp)
+                     (drop 9)
+                     (take 10))
+              total (apply + temps)
+              avg (/ total (count temps))]
+           (when (> avg 20)
+             (.sendMail transporter
+                        (clj->js
+                         {:from "michielborkent@gmail.com"
+                          :to MAIL_TO
+                          :subject MAIL_SUBJECT
+                          :text (str/replace MAIL_BODY #"\{\{avg\}\}"
+                                             (gstring/format "%.1f" avg))}))))))
 
 (defonce main
   #(let [{:keys [:options :summary]}
