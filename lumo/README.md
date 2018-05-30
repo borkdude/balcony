@@ -18,19 +18,37 @@ correctly. Then:
 
     scripts/balcony
 
-## Build
+## Build (optional)
+
+To create a standalone file that contains all the code including dependencies:
 
     scripts/build
 
 ## Deploy
 
-`scp` `bin/balcony.js` to a server that runs `nodejs`. Set the variables
-`MAIL_USER`, `MAIL_PASS`, `MAIL_TO` (comma seperated if you want multiple
-addresses) and `WEATHER_API_KEY` in e.g. `.profile`.  Then hook the script up in
-cron:
+Set the variables `MAIL_USER`, `MAIL_PASS`, `MAIL_TO` (comma seperated if you
+want multiple addresses) and `WEATHER_API_KEY` in e.g. `.profile`.
+
+### Running directly with lumo without building
+
+On the server:
+
+    git clone https://github.com/borkdude/balcony.git
+    cd balcony/lumo
+    yarn install
+    crontab -e
+
+Add:
+
+    30 19 * * * /usr/bin/env bash -c '. $HOME/.profile ; cd $HOME/balcony/lumo/; scripts/balcony -m'
+
+### Single file deploy
+
+Build first. Then `scp` `bin/balcony.js` to the server. Then hook the script up
+in cron:
 
     crontab -e
-    30 19 * * * /usr/bin/env bash -c '. $HOME/.profile && $HOME/balcony.js -m'
+    30 19 * * * /usr/bin/env bash -c '. $HOME/.profile; $HOME/balcony.js -m'
 
 ## Options
 
@@ -41,15 +59,27 @@ cron:
 Compared to the standalone `clj` in this repo on my VPS:
 
 ``` shell
+# with the build step
+
 $ time ./balcony.js -m
 real	0m2.034s
 user	0m0.330s
 sys	0m0.046s
 
+# JVM
+
 $ time ./balcony.clj -m
 real    0m30.508s
 user    0m12.479s
 sys    0m0.341s
+
+# Directly with lumo, no build step
+
+$ cd lumo
+$ time scripts/balcony -m
+real	0m2.672s
+user	0m1.257s
+sys	0m0.092s
 ```
 
 ## Credits
