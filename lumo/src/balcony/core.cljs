@@ -49,11 +49,19 @@
 (def MAIL_BODY
   (or MAIL_BODY "Please water the balcony tonight. The average temperature between 9AM and 7PM was {{avg}} degrees Celcius."))
 
+(defn mail-options [avg]
+  (clj->js
+   {:from "michielborkent@gmail.com"
+    :to MAIL_TO
+    :subject MAIL_SUBJECT
+    :text
+    (str/replace MAIL_BODY
+                 #"\{\{avg\}\}"
+                 (gstring/format "%.1f" avg))}))
+
 (defn send-mail []
   (.then (got WEATHER_API #js {:json true})
-         #(let
-              [body (js->clj (.-body %)
-                             :keywordize-keys true)
+         #(let [body (js->clj (.-body %) :keywordize-keys true)
                temps (->>
                      body
                      :data
@@ -64,12 +72,7 @@
               avg (/ total (count temps))]
            (when (> avg 20)
              (.sendMail transporter
-                        (clj->js
-                         {:from "michielborkent@gmail.com"
-                          :to MAIL_TO
-                          :subject MAIL_SUBJECT
-                          :text (str/replace MAIL_BODY #"\{\{avg\}\}"
-                                             (gstring/format "%.1f" avg))}))))))
+                        (mail-options avg))))))
 
 (defonce main
   #(let [{:keys [:options :summary]}
