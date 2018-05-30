@@ -62,25 +62,25 @@
 (defn send-mail []
   (.then (got WEATHER_API #js {:json true})
          #(let [body (js->clj (.-body %) :keywordize-keys true)
-               temps (->>
-                     body
-                     :data
-                     (map :temp)
-                     (drop 9)
-                     (take 10))
-              total (apply + temps)
-              avg (/ total (count temps))]
-           (when (> avg 20)
-             (.sendMail transporter
-                        (mail-options avg))))))
+                temps (->>
+                       body
+                       :data
+                       (map :temp)
+                       (drop 9)
+                       (take 10))
+                total (apply + temps)
+                avg (/ total (count temps))]
+            (when (> avg 20)
+              (.sendMail transporter
+                         (mail-options avg))))))
 
-(defonce main
-  #(let [{:keys [:options :summary]}
-         (parse-opts (or *command-line-args*
-                         (drop 2 js/process.argv)) cli-options)]
-     (cond
-       (:mail options) (send-mail)
-       ;; (:develop options) (dev!)
-       :else (println summary))))
+(defn main []
+  (let [{:keys [:options :summary]}
+        (parse-opts (or *command-line-args*
+                        (drop 2 js/process.argv)) cli-options)]
+    (cond
+      (:mail options) (send-mail)
+      ;; (:develop options) (dev!)
+      :else (println summary))))
 
 (set! *main-cli-fn* main)
